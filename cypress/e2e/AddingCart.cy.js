@@ -1,36 +1,59 @@
+import { v4 as uuidv4} from 'uuid';
+import moment from 'moment';
+
 describe('Login and Shopping Flow Test with userCredentials.json', () => {
+  
   const clearSessionAndStorage = () => {
     cy.clearCookies();
     cy.clearLocalStorage();
   };
+  
+  before(() => {
+    // Generate a UUID using uuid library
+const uuid = uuidv4();
 
+// Generate a timestamp using moment library
+const timestamp = moment().valueOf().toString();
+
+// Set localStorage values before the test starts
+cy.window().then((win) => {
+  win.localStorage.setItem('backtrace-last-active', timestamp);
+  win.localStorage.setItem('backtrace-guid', uuid);
+});
+})
+// Login function
   const performLogin = (username, password) => {
     cy.get('[data-test="username"]').type(username);
     cy.get('[data-test="password"]').type(password);
     cy.get('[data-test="login-button"]').click();
   };
 
+  // Login verification
   const checkLoggedIn = () => cy.url().then((url) => url.includes('/inventory.html'));
 
+  // Add to Cart
   const addItemToCart = () => cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click();
 
+  // Viewing Cart and Proceeding
   const viewCartAndProceed = () => {
     cy.get('.shopping_cart_container').click();
     cy.get('[data-test=checkout]').click();
   };
 
+  // Checkout and Complete Order
   const checkoutAndCompleteOrder = (firstName, lastName, postalCode) => {
     cy.get('[data-test=firstName]').type(firstName);
     cy.get('[data-test=lastName]').type(lastName);
     cy.get('[data-test=postalCode]').type(postalCode);
     cy.get('[data-test=continue]').click();
-   
   };
 
+  // Logout function
   const logout = () => {
     cy.get('#react-burger-menu-btn').click();
     cy.get('#logout_sidebar_link').click();
   };
+
 
   const handleUserScenario = (user) => {
     performLogin(user.username, user.password);
