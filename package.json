@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "cypress": "^13.6.0"
+  },
+  "dependencies": {
+    "moment": "^2.29.4",
+    "uuid": "^9.0.1"
+  }
+}
